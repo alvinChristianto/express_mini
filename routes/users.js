@@ -1,29 +1,10 @@
-const express = require("express");
+var express = require('express');
 const { PrismaClient } = require("@prisma/client");
-const homeRouter = require("./home.js");
-
 const prisma = new PrismaClient();
-const app = express();
-const port = 3000;
+var router = express.Router();
 
-app.use(express.json());
-
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
-
-app.use("/home", homeRouter);
-
-// homepage
-app.get("/", (req, res) => {
-  res.send("Hello world");
-});
-
-//get all users
-app.get("/users", async (req, res) => {
+/* GET users listing. */
+router.get('/', async function(req, res, next) {
   try {
     const users = await prisma.user.findMany();
     res.status(200).json(users);
@@ -33,7 +14,7 @@ app.get("/users", async (req, res) => {
 });
 
 // get user data with ids
-app.get("/users/:id", async (req, res) => {
+router.get("/:id", async function(req, res, next) {
   try {
     const users = await prisma.user.findUnique({
       where: {
@@ -46,7 +27,7 @@ app.get("/users/:id", async (req, res) => {
   }
 });
 
-app.post("/users", async (req, res) => {
+router.post("/", async function(req, res, next)  {
   try {
     console.log(req.body); 
     const user = await prisma.user.create({
@@ -61,7 +42,7 @@ app.post("/users", async (req, res) => {
   }
 });
 
-app.put("/users/:id", async (req, res) => {
+router.put("/:id", async function(req, res, next) {
   try {
     console.log(req.body)
     const user = await prisma.user.update({
@@ -79,7 +60,7 @@ app.put("/users/:id", async (req, res) => {
   }
 });
 
-app.delete("/users/:id", async (req, res) => {
+router.delete("/:id", async function(req, res, next) {
   try {
     const user = await prisma.user.delete({
       where: {
@@ -94,23 +75,4 @@ app.delete("/users/:id", async (req, res) => {
 
 
 
-
-app.get(
-  "/gfg",
-  (req, res, next) => {
-    console.log("hello");
-    next();
-  },
-  (req, res) => {
-    res.send(
-      `<div>
-          <h2>Welcome to GeeksforGeeks</h2>
-          <h5>Tutorial on Middleware</h5>
-      </div>`
-    );
-  }
-);
-
-app.listen(port, () => {
-  console.log(`example program listenign to ${port}`);
-});
+module.exports = router;

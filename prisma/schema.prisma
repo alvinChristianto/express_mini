@@ -18,3 +18,8 @@ model User {
   name String
   email String
 }
+
+model Reservation {
+  id_reservation  Int @id @default(autoincrement())
+  guest_name String
+}
