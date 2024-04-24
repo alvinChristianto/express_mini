@@ -1,3 +1,4 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,8 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var reservationsRouter = require('./routes/reservations');
+var V1usersRouter = require('./routes/V1/users');
+var V1reservationsRouter = require('./routes/V1/reservations');
 
 var app = express();
 
@@ -19,6 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public', 'css')));
 
 //not use maybe
 // app.use((req, res, next) => {
@@ -28,9 +31,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   next();
 // });
 
+// // app.use('/static', express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public', 'images')));
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/reservations', reservationsRouter);
+app.use('/users', V1usersRouter);
+app.use('/reservations', V1reservationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,6 +1,11 @@
 var express = require('express');
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+
+var hash = require('pbkdf2-password')()
+var path = require('path');
+var session = require('express-session');
+
 var router = express.Router();
 
 /* GET users listing. */
@@ -15,7 +20,7 @@ router.get('/', async function(req, res, next) {
 
 // get user data with ids
 router.get("/:id", async function(req, res, next) {
-  try {
+  try {   
     const users = await prisma.user.findUnique({
       where: {
         id: Number(req.params.id),
